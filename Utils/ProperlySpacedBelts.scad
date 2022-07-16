@@ -22,24 +22,24 @@ module TwoPulleyBelt(num_teeth_0,num_teeth_1,num_teeth_belt,phase=0,pitch=2){
     RoundGT2(num_teeth_0,180+2*beta,(0.5+phase+(PI*beta/(360*pitch))+phase_offset)%1);
   };
 
-module GT2Unit(){
-  GT2Half();
-  mirror([1,0,0])GT2Half();
+module GT2Unit(fill_gap=0){
+  GT2Half(fill_gap);
+  mirror([1,0,0])GT2Half(fill_gap);
   };
 
-module GT2UnitTooth(){
-  GT2HalfTooth();
-  mirror([1,0,0])GT2HalfTooth();
+module GT2UnitTooth(fill_gap=0){
+  GT2HalfTooth(fill_gap);
+  mirror([1,0,0])GT2HalfTooth(fill_gap);
   };
 
-module GT2Half(){
+module GT2Half(fill_gap=0){
   intersection(){
     union(){
       intersection(){
         translate([0.4,0.254,0])circle(r=1);
         square(1.38,center=true);
       };
-      translate([0,0.254,0])mirror([1,1,0])square([1.38-0.75,1]);
+      translate([0,0.254,0])mirror([1,1,0])square([1.38-0.75,1+fill_gap]);
       translate([0,0.254+0.75-0.555,0])circle(r=0.555);
       translate([-0.588,0.254,0])difference(){
         square([0.3,0.26],center=true);
@@ -50,14 +50,14 @@ module GT2Half(){
   };
   };
 
-module GT2HalfTooth(){
+module GT2HalfTooth(fill_gap=0){
   intersection(){
     union(){
       intersection(){
         translate([0.4,0.254,0])circle(r=1);
         square(1.38,center=true);
       };
-      translate([0,0.254,0])mirror([1,1,0])square([1.38-0.75,1]);
+      translate([0,0.254,0])mirror([1,1,0])square([1.38-0.75,1+fill_gap]);
       translate([0,0.254+0.75-0.555,0])circle(r=0.555);
       translate([-0.588,0.254,0])difference(){
         square([0.3,0.26],center=true);
@@ -68,7 +68,7 @@ module GT2HalfTooth(){
   };
   };
 
-module RoundGT2(teeth=20,angle=90,phase=0){
+module RoundGT2(teeth=20,angle=90,phase=0,inverted=false){
     difference(){
       union(){
         difference(){
@@ -76,7 +76,11 @@ module RoundGT2(teeth=20,angle=90,phase=0){
           circle(r=teeth/PI-0.254);
         };
         for (i=[-360/teeth:360/teeth:angle]){
-          rotate(i+(phase%1 * 360/teeth))translate([0,-teeth/PI,0])render()GT2UnitTooth();
+          rotate(i+(phase%1 * 360/teeth))
+            translate([0,-teeth/PI,0])
+            render()
+            rotate(inverted ? 180 : 0) 
+            GT2UnitTooth();
         };
       };
       Sector(teeth,[270,270+angle]);  
@@ -112,6 +116,8 @@ module Sector(radius, angles, fn = 3) {
     polygon(points);
 };
 
+/* Computes center to center distance betwee two pulleys of given pitch
+   circle radius with given belt length */
 function getCenterDist(num_teeth_0,num_teeth_1,num_teeth_belt,pitch=2,tol=0.001) =
   let (belt_length = num_teeth_belt*pitch,
        radius_0 = num_teeth_0*pitch/(2*PI),
