@@ -1,5 +1,5 @@
-$fs=0.1;
-$fa=0.1;
+/* $fs=0.1; */
+/* $fa=0.1; */
 
 module TwoPulleyBelt(num_teeth_0,num_teeth_1,num_teeth_belt,phase=0,pitch=2){
   // TODO: phases are wrong below
@@ -68,7 +68,8 @@ module GT2HalfTooth(fill_gap=0){
   };
   };
 
-module RoundGT2(teeth=20,angle=90,phase=0,inverted=false){
+module RoundGT2(teeth=20,angle=90,pitch=2,phase=0,inverted=false){
+  scale(pitch/2)
     difference(){
       union(){
         difference(){
@@ -86,7 +87,15 @@ module RoundGT2(teeth=20,angle=90,phase=0,inverted=false){
       Sector(teeth,[270,270+angle]);  
     };
   };
-
+module GT2Section(num_teeth,width=10,pitch=2,phase=0,center=false){
+  linear_extrude(height=width,convexity=10,center=center)
+  intersection(){
+    translate([0,-pitch])square([num_teeth*pitch,2*pitch]);
+    for (i = [-1:1:num_teeth]){
+      translate([(i+phase%1)*pitch,0])GT2Unit(0.1);
+      };
+  };
+};
 module StraightGT2(num_teeth_0,c0,num_teeth_1,c1,phase=0,pitch=2,flip=false){
   quad = (c0.x - c1.x)^2 + (c0.y - c1.y)^2;
   radius_0 = num_teeth_0 * pitch / (2*PI);
