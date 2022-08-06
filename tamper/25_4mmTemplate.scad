@@ -11,7 +11,12 @@ module tamp(){
         import("./BaseModelTamper.stl", convexity=3);
 };
 
-linear_extrude(6.35)round(0.5,8)projection()rotate([90,0,0]){
+rotate(180)translate([15,60,0])linear_extrude(6.35)round(0.5,8)projection()rotate([90,0,0]){
   tamp();
   };
+
+/* translate([40,-20,-40])rotate([-20,-20,0]){ */
+  /* tamp(); */
+  /* }; */
+
 /* translate([0,0,-20])english_thread(diameter=3/8, threads_per_inch=16, length=1, internal=true); */
