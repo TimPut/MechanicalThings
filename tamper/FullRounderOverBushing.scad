@@ -2,7 +2,6 @@ $fa=0.5;
 $fs=0.5;
 
 module RouterBit(shaft=0.5*25.4,radius=0.5*25.4,height=3/4*25.4,diam=1.5*25.4){
-  
   color("silver")cylinder(d=shaft,h=2*25.4);
   color("green")difference(){
     translate([0,0,0])cylinder(d=diam,h=height);
@@ -33,8 +32,11 @@ module Display(){
     RouterBit();
     Bushing();
   };
+};
+
 module Print(){
     Bushing();
   };
 
-Print();
+/* Print(); */
+Display();
